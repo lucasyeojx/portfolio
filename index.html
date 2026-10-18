@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lucas Yeo | Macro Portfolio</title>
+<meta name="description" content="Macro research and trade ideas by Yeo Jia Xun Lucas: process, trade log with post-mortems, research notes and The Macro Pod.">
+<meta property="og:title" content="Lucas Yeo | Macro Portfolio">
+<meta property="og:description" content="Asian macro research and documented trade ideas.">
+<meta property="og:type" content="website">
+<meta name="color-scheme" content="light dark">
+<style>body{margin:0} [hidden]{display:none!important} :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: single reading column (~720px) like a research note; trade ticket and price ladder break out to a wider 1040px band. */
+:root{
+  --paper:#F4F6F5; --surface:#FFFFFF; --ink:#14201D; --muted:#55635E; --rule:#D6DDDA;
+  --accent:#0E5A55; --accent-soft:#E2EFEC;
+  --loss:#B4432F; --loss-soft:#F6E4DF; --amber:#9A6A0B; --amber-soft:#F5ECD6; --gain:#2F7A3E;
+  --display:"Bricolage Grotesque", "Helvetica Neue", Arial, sans-serif;
+  --body:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1614; --surface:#16201D; --ink:#E4EBE8; --muted:#9AA9A3; --rule:#2B3834;
+  --accent:#6CC7B8; --accent-soft:#18302C;
+  --loss:#EE8A75; --loss-soft:#3A221D; --amber:#E2B65A; --amber-soft:#332A16; --gain:#7FC98C; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#0F1614; --surface:#16201D; --ink:#E4EBE8; --muted:#9AA9A3; --rule:#2B3834;
+  --accent:#6CC7B8; --accent-soft:#18302C;
+  --loss:#EE8A75; --loss-soft:#3A221D; --amber:#E2B65A; --amber-soft:#332A16; --gain:#7FC98C; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--paper); color:var(--ink); font-family:var(--body); font-size:17px; line-height:1.6;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px)); padding-block:0 64px}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible, button:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+.col{max-width:1040px; margin-inline:auto}
+.sec-head p, header .lede, .note .main, ol.lessons, dl.other, footer p{max-width:720px}
+.wide{max-width:1040px; margin-inline:auto}
+h1,h2,h3{font-family:var(--display); text-wrap:balance; line-height:1.15; margin:0}
+h2{font-size:1.65rem; font-weight:700}
+h3{font-size:1.2rem; font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--mono); font-size:.72rem; letter-spacing:.09em; text-transform:uppercase; color:var(--muted)}
+.num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+/* Header */
+header{padding-block:56px 32px; border-bottom:1px solid var(--rule)}
+header .wrap{display:grid; gap:18px}
+header h1{font-size:clamp(2.2rem, 6vw, 3.4rem); font-weight:700; letter-spacing:-.01em}
+header .lede{font-size:1.2rem; max-width:40ch; color:var(--ink)}
+.meta{display:flex; flex-wrap:wrap; gap:8px 20px; font-family:var(--mono); font-size:.8rem; color:var(--muted)}
+.links{display:flex; flex-wrap:wrap; gap:10px}
+.btn{display:inline-flex; align-items:center; gap:8px; font-family:var(--display); font-weight:500; font-size:.95rem;
+  padding:9px 16px; border-radius:999px; border:1px solid var(--accent); text-decoration:none}
+.btn.primary{background:var(--accent); color:var(--paper)}
+nav.toc{display:flex; flex-wrap:wrap; gap:6px 18px; font-family:var(--display); font-size:.92rem}
+nav.toc a{color:var(--muted); text-decoration:none}
+nav.toc a:hover{color:var(--accent)}
+
+section{padding-block:48px 8px}
+.sec-head{display:grid; gap:6px; margin-bottom:22px}
+.sec-head p{color:var(--muted)}
+
+/* Process */
+ol.steps{list-style:none; margin:0; padding:0; display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1px; background:var(--rule); border:1px solid var(--rule); border-radius:10px; overflow:hidden}
+ol.steps li{background:var(--surface); padding:16px 18px; display:grid; gap:4px; min-width:0}
+ol.steps .n{font-family:var(--mono); font-size:.75rem; color:var(--accent)}
+ol.steps b{font-family:var(--display); font-weight:700; font-size:1rem}
+ol.steps span{font-size:.92rem; color:var(--muted); line-height:1.45}
+
+/* Trade ticket */
+.ticket{background:var(--surface); border:1px solid var(--rule); border-radius:12px; overflow:hidden}
+.ticket-top{display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px 24px; padding:20px 22px; border-bottom:1px solid var(--rule)}
+.ticket-top h3{font-size:1.35rem}
+.chips{display:flex; flex-wrap:wrap; gap:8px; align-items:flex-start}
+.chip{font-family:var(--mono); font-size:.74rem; padding:4px 10px; border-radius:999px; white-space:nowrap}
+.chip.loss{background:var(--loss-soft); color:var(--loss)}
+.chip.neutral{background:var(--accent-soft); color:var(--accent)}
+.chip.amber{background:var(--amber-soft); color:var(--amber)}
+.levels{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); border-bottom:1px solid var(--rule)}
+.levels div{padding:14px 18px; border-right:1px solid var(--rule); display:grid; gap:2px}
+.levels div:last-child{border-right:0}
+.levels .v{font-family:var(--mono); font-size:1.15rem; font-variant-numeric:tabular-nums}
+.levels .v.loss{color:var(--loss)}
+.ticket-body{display:grid; grid-template-columns:minmax(0,1.15fr) minmax(0,1fr); gap:0}
+.ticket-body > div{padding:22px; min-width:0}
+.ticket-body > div + div{border-left:1px solid var(--rule)}
+.field{display:grid; gap:4px; margin-bottom:16px}
+.field:last-child{margin-bottom:0}
+.field p, .field li{font-size:.97rem}
+.field ul{margin:0; padding-left:1.1em}
+.field li{margin-bottom:2px}
+figure{margin:0}
+figcaption{font-size:.85rem; color:var(--muted); margin-top:8px}
+.chartrow{padding:22px; border-top:1px solid var(--rule)}
+.chart{overflow-x:auto}
+.chart svg{display:block; width:100%; max-width:820px; min-width:480px; height:auto; margin-inline:auto}
+.verdicts{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); border-top:1px solid var(--rule)}
+.verdicts div{padding:14px 18px; border-right:1px solid var(--rule); display:grid; gap:4px; min-width:0}
+.verdicts div:last-child{border-right:0}
+.verdicts b{font-family:var(--display); font-size:1rem}
+.postmortem{padding:20px 22px; border-top:1px solid var(--rule); display:grid; gap:8px}
+
+/* Research notes */
+.notes{display:grid; gap:0; border-top:1px solid var(--rule)}
+.note{display:grid; grid-template-columns:150px minmax(0,1fr); gap:8px 28px; padding-block:24px; border-bottom:1px solid var(--rule)}
+.note .side{display:grid; gap:6px; align-content:start}
+.note .main{display:grid; gap:10px; min-width:0}
+.note p{font-size:1rem}
+.tags{display:flex; flex-wrap:wrap; gap:6px}
+.tag{font-family:var(--mono); font-size:.7rem; color:var(--muted); border:1px solid var(--rule); border-radius:4px; padding:2px 7px}
+.status{font-family:var(--mono); font-size:.72rem; justify-self:start; padding:3px 8px; border-radius:4px}
+.status.done{background:var(--accent-soft); color:var(--accent)}
+.status.wip{background:var(--amber-soft); color:var(--amber)}
+
+/* Lessons */
+ol.lessons{margin:0; padding-left:1.4em; display:grid; gap:12px}
+ol.lessons li{padding-left:4px}
+ol.lessons li::marker{font-family:var(--mono); color:var(--accent)}
+
+/* Substack band */
+.pod{background:var(--accent-soft); border-radius:12px; padding:26px 24px; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:16px 28px; align-items:center}
+.pod h3{font-size:1.4rem}
+.pod p{color:var(--ink)}
+
+/* Toolkit */
+.toolkit{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:18px 28px}
+.toolkit h3{font-size:.95rem; margin-bottom:6px}
+.toolkit ul{margin:0; padding:0; list-style:none; display:grid; gap:3px; font-size:.95rem}
+
+/* Other */
+dl.other{margin:0; display:grid; grid-template-columns:minmax(0,220px) minmax(0,1fr); gap:14px 24px}
+dl.other dt{font-family:var(--display); font-weight:700}
+dl.other dd{margin:0; color:var(--ink)}
+
+footer{margin-top:56px; padding-top:20px; border-top:1px solid var(--rule); font-size:.85rem; color:var(--muted)}
+
+@media (max-width:760px){
+  .ticket-body{grid-template-columns:1fr}
+  .ticket-body > div + div{border-left:0; border-top:1px solid var(--rule)}
+  .note{grid-template-columns:1fr}
+  .pod{grid-template-columns:1fr}
+  .verdicts{grid-template-columns:1fr}
+  .verdicts div{border-right:0; border-bottom:1px solid var(--rule)}
+  .verdicts div:last-child{border-bottom:0}
+  dl.other{grid-template-columns:1fr; gap:4px}
+  dl.other dd{margin-bottom:12px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="col wrap">
+    <p class="eyebrow">Discretionary global macro · Asia focus</p>
+    <h1>Yeo Jia Xun Lucas</h1>
+    <p class="lede">I take one macro development a week, map how it moves markets, and turn the best ones into trade ideas with defined entry, target, stop and invalidation.</p>
+    <div class="meta">
+      <span>BBA (Hons), National University of Singapore, 2025–2029</span>
+      <span>Writer, The Macro Pod</span>
+    </div>
+    <div class="links">
+      <a class="btn primary" href="https://substack.com/@themacropod" target="_blank" rel="noopener">Read The Macro Pod</a>
+      <a class="btn" href="#trades">See the trade log</a>
+    </div>
+    <nav class="toc" aria-label="Sections">
+      <a href="#process">Process</a><a href="#trades">Trade log</a><a href="#research">Research</a><a href="#lessons">Lessons</a><a href="#pod">The Macro Pod</a><a href="#toolkit">Toolkit</a><a href="#other">Other work</a>
+    </nav>
+  </div>
+</header>
+
+<section id="process">
+  <div class="wide">
+    <div class="sec-head col" style="margin-inline:0">
+      <p class="eyebrow">Process</p>
+      <h2>How an idea becomes a trade</h2>
+      <p>Every idea goes through the same eight steps, in order. An idea that fails a step is logged and dropped.</p>
+    </div>
+    <ol class="steps">
+      <li><span class="n">01</span><b>Start from a change</b><span>A decision, data surprise or price shock. A level is not news.</span></li>
+      <li><span class="n">02</span><b>Map the transmission</b><span>Event, mechanism, asset. Pick the asset with the shortest chain.</span></li>
+      <li><span class="n">03</span><b>Find what's priced</b><span>Swaps, forwards, implied vol, positioning. The edge is the gap to my view.</span></li>
+      <li><span class="n">04</span><b>Name the catalyst</b><span>Dated events that force the market toward the view.</span></li>
+      <li><span class="n">05</span><b>Choose the instrument</b><span>Clean exposure, carry cost, access, risk shape.</span></li>
+      <li><span class="n">06</span><b>Set the levels</b><span>Stop beyond realised-vol noise; at least 2:1 after carry.</span></li>
+      <li><span class="n">07</span><b>Run a pre-mortem</b><span>Thesis, timing, crowding, event risk. Observable invalidation triggers.</span></li>
+      <li><span class="n">08</span><b>Write the ticket</b><span>One page. Then log it, and review it against the outcome.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="trades">
+  <div class="wide">
+    <div class="sec-head">
+      <p class="eyebrow">Trade log</p>
+      <h2>Tracked trade ideas</h2>
+      <p>Every idea is logged with its levels before the outcome is known, and reviewed afterwards. Losses stay on the record.</p>
+    </div>
+
+    <article class="ticket" aria-labelledby="t1">
+      <div class="ticket-top">
+        <div style="display:grid;gap:6px;min-width:0">
+          <p class="eyebrow">USD/INR · Long · Opened 8 Oct 2026 · Closed 12 Oct 2026</p>
+          <h3 id="t1">Long USD/INR on India's balance-of-payments squeeze</h3>
+        </div>
+        <div class="chips">
+          <span class="chip loss">Stopped out · −1.0R</span>
+          <span class="chip neutral">Spot, no derivatives</span>
+        </div>
+      </div>
+
+      <div class="levels">
+        <div><span class="eyebrow">Entry</span><span class="v">96.70</span></div>
+        <div><span class="eyebrow">Target</span><span class="v">100.00</span></div>
+        <div><span class="eyebrow">Stop</span><span class="v">96.00</span></div>
+        <div><span class="eyebrow">Carry</span><span class="v">~0.30</span></div>
+        <div><span class="eyebrow">Planned R:R</span><span class="v">~3 : 1</span></div>
+        <div><span class="eyebrow">Result</span><span class="v loss">−1.0R</span></div>
+      </div>
+
+      <div class="ticket-body">
+        <div>
+          <div class="field">
+            <span class="eyebrow">Thesis</span>
+            <p>India faced a squeeze on both sides of its balance of payments. Oil above $100 widened the goods deficit, with a lag as import contracts repriced, while portfolio outflows driven by US yields meant the deficit was financed with volatile capital. The RBI's "orderly adjustment" stance implied fewer hikes than the 100–150bp priced in swaps, removing carry support, so USD/INR should rise faster than forwards implied.</p>
+          </div>
+          <div class="field">
+            <span class="eyebrow">What was priced</span>
+            <p>A gradual, RBI-managed depreciation: 3-month forward at 97.70 (~4.3% annualised), 1-year OIS at 6.26%, Brent in steep backwardation, 3-month implied vol 7.5% against realised ~3%, and MUFG at 97.5 by Q3 2027.</p>
+          </div>
+        </div>
+        <div>
+          <div class="field">
+            <span class="eyebrow">Catalysts</span>
+            <ul>
+              <li>India September CPI and trade data (mid-Oct)</li>
+              <li>US September CPI; Fed meeting 27–28 Oct</li>
+              <li>Weekly RBI reserves and daily portfolio flows</li>
+              <li>RBI December meeting (horizon)</li>
+            </ul>
+          </div>
+          <div class="field">
+            <span class="eyebrow">Invalidation</span>
+            <ul>
+              <li>Brent falls sharply on a Hormuz reopening</li>
+              <li>RBI escalation: a 50bp hike, heavy intervention or curbs on dollar buying</li>
+              <li>Reserves stabilise or foreign portfolio inflows resume</li>
+              <li>USD/INR closes below 96.00</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="chartrow">
+          <figure class="chart">
+            <svg viewBox="0 0 640 335" role="img" aria-labelledby="chart-title chart-desc">
+              <title id="chart-title">USD/INR around the trade</title>
+              <desc id="chart-desc">USD/INR closes from 8 to 16 October 2026 against the trade's entry at 96.70, stop at 96.00 and target at 100.00. The pair fell to 95.77 on 12 October and 94.96 by 16 October.</desc>
+              <g font-family="JetBrains Mono, monospace" font-size="11" fill="var(--muted)">
+                <g stroke="var(--rule)" stroke-width="1">
+                  <line x1="60" x2="520" y1="43.3" y2="43.3"/><line x1="60" x2="520" y1="90" y2="90"/>
+                  <line x1="60" x2="520" y1="136.7" y2="136.7"/><line x1="60" x2="520" y1="183.3" y2="183.3"/>
+                  <line x1="60" x2="520" y1="230" y2="230"/><line x1="60" x2="520" y1="276.7" y2="276.7"/>
+                </g>
+                <text x="50" y="47" text-anchor="end">100</text><text x="50" y="94" text-anchor="end">99</text>
+                <text x="50" y="140.5" text-anchor="end">98</text><text x="50" y="187" text-anchor="end">97</text>
+                <text x="50" y="234" text-anchor="end">96</text><text x="50" y="280.5" text-anchor="end">95</text>
+                <text x="60" y="315" text-anchor="middle">8 Oct</text><text x="136.7" y="315" text-anchor="middle">9</text>
+                <text x="213.3" y="315" text-anchor="middle">12</text><text x="290" y="315" text-anchor="middle">13</text>
+                <text x="366.7" y="315" text-anchor="middle">14</text><text x="443.3" y="315" text-anchor="middle">15</text>
+                <text x="520" y="315" text-anchor="middle">16</text>
+              </g>
+              <!-- planned levels -->
+              <g stroke-width="1.5" stroke-dasharray="5 4" fill="none">
+                <line x1="60" x2="530" y1="43.3" y2="43.3" stroke="var(--gain)"/>
+                <line x1="60" x2="530" y1="197.3" y2="197.3" stroke="var(--accent)"/>
+                <line x1="60" x2="530" y1="230" y2="230" stroke="var(--loss)"/>
+              </g>
+              <g font-family="Bricolage Grotesque, Arial, sans-serif" font-size="12" font-weight="700">
+                <text x="536" y="47.5" fill="var(--gain)">Target 100.00</text>
+                <text x="536" y="201.5" fill="var(--accent)">Entry 96.70</text>
+                <text x="536" y="234" fill="var(--loss)">Stop 96.00</text>
+              </g>
+              <!-- price path -->
+              <polyline fill="none" stroke="var(--ink)" stroke-width="2.25" stroke-linejoin="round"
+                points="60,197.3 136.7,195.9 213.3,240.7 290,263.6 366.7,269.7 443.3,277.2 520,278.5"/>
+              <g fill="var(--ink)">
+                <circle cx="60" cy="197.3" r="4"/><circle cx="136.7" cy="195.9" r="3"/>
+                <circle cx="290" cy="263.6" r="3"/><circle cx="366.7" cy="269.7" r="3"/><circle cx="443.3" cy="277.2" r="3"/>
+              </g>
+              <circle cx="213.3" cy="240.7" r="5" fill="var(--loss)"/>
+              <circle cx="520" cy="278.5" r="4.5" fill="var(--ink)"/>
+              <g font-family="JetBrains Mono, monospace" font-size="11" fill="var(--ink)">
+                <text x="222" y="128">RBI oil-company dollar</text>
+                <text x="222" y="142">window, Sat 10 Oct</text>
+                <line x1="213.3" x2="213.3" y1="148" y2="232" stroke="var(--loss)" stroke-width="1"/>
+                <text x="225" y="256" fill="var(--loss)">95.77</text>
+                <text x="512" y="300" text-anchor="end">94.96</text>
+              </g>
+            </svg>
+            <figcaption>Daily closes. The policy change landed over a weekend, so Monday opened below the stop. The pair kept falling for four more sessions. Sources: Reuters via Business Recorder; HDFC Sky weekly rupee review.</figcaption>
+          </figure>
+      </div>
+
+      <div class="verdicts">
+        <div><span class="eyebrow">Thesis</span><b>Intact, unproven</b><span class="chip amber" style="justify-self:start">Watching</span></div>
+        <div><span class="eyebrow">Timing</span><b>Wrong</b><span class="chip loss" style="justify-self:start">Missed the RBI's line at 97</span></div>
+        <div><span class="eyebrow">Execution</span><b>Followed the plan</b><span class="chip neutral" style="justify-self:start">Stop honoured</span></div>
+      </div>
+
+      <div class="postmortem">
+        <span class="eyebrow">What happened</span>
+        <p>On Saturday 10 October the RBI began selling dollars directly to the three state oil companies, removing an estimated $10–12bn a month of spot demand, and tightened FX derivative rules. On Monday the rupee rallied about 1% to 95.77, its best day since April. The mechanism I traded (oil-driven dollar demand) was exactly the flow the central bank took off-market. The risk was on my invalidation list; I underweighted it because the RBI used the same tool in 2013.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section id="research">
+  <div class="col">
+    <div class="sec-head">
+      <p class="eyebrow">Research</p>
+      <h2>Notes and papers</h2>
+      <p>Weekly macro developments written for my mentorship programme and The Macro Pod, plus longer research.</p>
+    </div>
+    <div class="notes">
+      <article class="note">
+        <div class="side">
+          <span class="eyebrow">Oct 2026</span>
+          <span class="status done">Weekly note</span>
+        </div>
+        <div class="main">
+          <h3>The RBI's "calibrated tightening" and the rupee</h3>
+          <p>The RBI's 25bp hike to 5.50% on 7 October, its first in four years, was fully priced. The news was the guidance. I traced the rupee's weakness to two pressures at once: oil above $100 and portfolio outflows driven by US yields, with the real effective exchange rate already down from 108 to 91. This note became the USD/INR trade above.</p>
+          <div class="tags"><span class="tag">impossible trinity</span><span class="tag">REER</span><span class="tag">covered interest parity</span><span class="tag">terms of trade</span></div>
+        </div>
+      </article>
+      <article class="note">
+        <div class="side">
+          <span class="eyebrow">Sep 2026</span>
+          <span class="status done">Weekly note</span>
+        </div>
+        <div class="main">
+          <h3>SNB holds at 0%: the franc's weakness is imported</h3>
+          <p>The 24 September hold was expected by every surveyed economist. What changed was the SNB dropping the heightened intervention language it added in March and revising inflation up, a signal that it accepts a weaker franc as easing. I tied the franc's ~3% trade-weighted decline to the repricing of foreign rate paths rather than to the hold itself.</p>
+          <div class="tags"><span class="tag">interest parity</span><span class="tag">real rates</span><span class="tag">safe-haven flows</span><span class="tag">reaction function</span></div>
+        </div>
+      </article>
+      <article class="note">
+        <div class="side">
+          <span class="eyebrow">Oct 2026</span>
+          <span class="status wip">Paper in progress</span>
+        </div>
+        <div class="main">
+          <h3>Why India's inflation lagged the oil shock</h3>
+          <p>Sierra Economic Research sprint. The RBI's own estimate (+10% crude ≈ +20bp CPI) implied about 120bp of extra inflation from a ~60% oil rise, yet headline CPI barely moved from February to April. A ₹10/litre excise cut and a pump-price freeze absorbed the shock. Once the freeze ended, transport CPI rose to 5.01% and headline to 5.54% by September. The paper asks how fiscal buffers change the timing and mix of pass-through.</p>
+          <div class="tags"><span class="tag">exchange-rate pass-through</span><span class="tag">second-round effects</span><span class="tag">fiscal buffers</span></div>
+        </div>
+      </article>
+      <article class="note">
+        <div class="side">
+          <span class="eyebrow">Oct 2026</span>
+          <span class="status wip">Developing idea</span>
+        </div>
+        <div class="main">
+          <h3>China's export boom is a price cycle</h3>
+          <p>September exports rose 36.3% against 25.7% expected, but chip export value rose 136% on volume up only 1%. If the boom is mostly memory-chip prices, Asian export growth can decelerate quickly when prices turn. Chip equities fell more than 14% in seven sessions; the open question is whether Asian FX has priced the same risk. Research stage, no position.</p>
+          <div class="tags"><span class="tag">savings–investment imbalance</span><span class="tag">terms of trade</span><span class="tag">base effects</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="lessons">
+  <div class="col">
+    <div class="sec-head">
+      <p class="eyebrow">Lessons library</p>
+      <h2>What the losses taught me</h2>
+      <p>Drawn from post-mortems in the trade log. Each one changes how the next ticket is written.</p>
+    </div>
+    <ol class="lessons">
+      <li>Don't start a trend trade in a managed currency at the level the central bank is defending. Check its intent, its capacity, and where it has drawn the line.</li>
+      <li>Map the full policy toolkit, including market-plumbing tools such as direct dollar windows and derivative rules, and check the central bank's last crisis playbook.</li>
+      <li>When implied volatility sits far above realised, the market is pricing a jump. Size smaller or use a defined-risk structure.</li>
+      <li>Crowded positioning is what makes a reversal violent, not just a cap on upside.</li>
+      <li>Policy can land on weekends. Cut size before weekends and known events.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="pod">
+  <div class="col">
+    <div class="pod">
+      <div style="display:grid;gap:8px;min-width:0">
+        <p class="eyebrow">Writing · since Sep 2026</p>
+        <h3>The Macro Pod</h3>
+        <p>An independent Substack on Asian macroeconomics: central banks, currencies and the shocks that move them, written for readers who want the mechanism, not just the headline.</p>
+      </div>
+      <a class="btn primary" href="https://substack.com/@themacropod" target="_blank" rel="noopener">Subscribe on Substack</a>
+    </div>
+  </div>
+</section>
+
+<section id="toolkit">
+  <div class="col">
+    <div class="sec-head">
+      <p class="eyebrow">Toolkit</p>
+      <h2>Concepts I apply</h2>
+    </div>
+    <div class="toolkit">
+      <div><h3>Rates and policy</h3><ul><li>Priced-in vs news</li><li>OIS as the expected rate path</li><li>Real rates and the Taylor principle</li><li>Central bank reaction functions</li></ul></div>
+      <div><h3>FX</h3><ul><li>Impossible trinity</li><li>Covered and uncovered interest parity</li><li>Forward premium and hedging demand</li><li>REER and NEER</li></ul></div>
+      <div><h3>External balance</h3><ul><li>Balance-of-payments identity</li><li>Terms-of-trade shocks</li><li>Volatile vs stable capital</li><li>Global financial cycle</li></ul></div>
+      <div><h3>Risk</h3><ul><li>Implied vs realised volatility</li><li>Carry and breakeven</li><li>Crowded positioning</li><li>Pre-mortems and invalidation</li></ul></div>
+    </div>
+  </div>
+</section>
+
+<section id="other">
+  <div class="col">
+    <div class="sec-head">
+      <p class="eyebrow">Other work</p>
+      <h2>Competitions and training</h2>
+    </div>
+    <dl class="other">
+      <dt>CFA Institute Research Challenge 2026</dt>
+      <dd>Equity research on Keppel Ltd (SGX: BN4), including a sum-of-the-parts valuation of its asset management arm.</dd>
+      <dt>Bloomberg Global Trading Challenge 2026</dt>
+      <dd>Team competition, long-only equities.</dd>
+      <dt>CFI CMSA</dt>
+      <dd>Capital Markets &amp; Securities Analyst programme, Corporate Finance Institute.</dd>
+    </dl>
+    <footer>
+      <p>Levels, prices and data are as recorded at the time of each note or ticket. R is the profit or loss as a multiple of the risk planned at entry. Trade ideas are personal research, not investment advice.</p>
+    </footer>
+  </div>
+</section>
+</body>
+</html>
